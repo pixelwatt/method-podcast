@@ -3,7 +3,7 @@
  * Plugin Name: Method Podcast
  * Plugin URI:
  * Description: This is a podcast integration that sets up a post type and custom feed for podcasts.
- * Version: 0.9.0
+ * Version: 0.9.1
  * Author: Rob Clark
  * Author URI: https://robclark.io
  * License: GPLv2 or later
@@ -289,7 +289,7 @@ function method_podcast_init() {
 		'singular_name'      => _x( 'Podcast', 'post type singular name', 'hfh' ),
 		'menu_name'          => _x( 'Podcasts', 'admin menu', 'hfh' ),
 		'name_admin_bar'     => _x( 'Podcast', 'add new on admin bar', 'hfh' ),
-		'add_new'            => _x( 'Add News Podcast', 'job', 'hfh' ),
+		'add_new'            => _x( 'Add New Podcast', 'job', 'hfh' ),
 		'add_new_item'       => __( 'Add New Podcast', 'hfh' ),
 		'new_item'           => __( 'New Podcast', 'hfh' ),
 		'edit_item'          => __( 'Edit Podcast', 'hfh' ),
@@ -309,11 +309,12 @@ function method_podcast_init() {
 		'show_ui'            => true,
 		'query_var'          => true,
 		'capability_type'    => 'post',
+		'rewrite'            => array( 'slug' => 'podcast' ),
 		'has_archive'        => true,
 		'hierarchical'       => false,
 		'menu_position' 	 => 5,
 		'menu_icon'			 => 'dashicons-megaphone',
-		'supports'           => array( 'title' , 'editor' )
+		'supports'           => array( 'title' , 'editor', 'thumbnail' )
 	);
 
 	register_post_type( 'method_podcast', $args );

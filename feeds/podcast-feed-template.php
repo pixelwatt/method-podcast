@@ -1,7 +1,5 @@
 <?php
 header('Content-Type: text/xml');
-
-$options = get_option( 'method_podcast' );
 $util = new Method_Podcast_Utilities();
 
 echo '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0"><channel>';
@@ -13,7 +11,7 @@ if ( $util->get_option( 'channel_artwork' ) ) {
 		echo '<image><url>' . $util->get_option( 'channel_artwork' ) . '</url><title>' . $util->get_option( 'channel_title' ) . '</title><link>' . $util->get_option( 'channel_link' ) . '</link></image>';
 	}
 }
-echo ( $util->get_option( 'channel_language' ) ? '<language>' . $util->get_option( 'channel_language' ) . '</language>' : '' );
+echo '<language>' . $util->get_option( 'channel_language', 'en-us' ) . '</language>';
 if ( $util->get_option( 'channel_itunes_categories' ) ) {
 	if ( is_array( $util->get_option( 'channel_itunes_categories' ) ) ) {
 		if ( 0 < count( $util->get_option( 'channel_itunes_categories' ) ) ) {
@@ -32,13 +30,14 @@ if ( $util->get_option( 'channel_itunes_categories' ) ) {
 		}
 	}
 }
-echo ( $util->get_option( 'channel_explicit' ) ? '<itunes:explicit>' . ( 'on' == $util->get_option( 'channel_explicit' ) ? 'true' : 'false' ) . '</itunes:explicit>' : '' );
+echo '<itunes:explicit>' . ( 'on' == $util->get_option( 'channel_explicit' ) ? 'true' : 'false' ) . '</itunes:explicit>';
 echo ( $util->get_option( 'channel_author' ) ? '<itunes:author>' . $util->get_option( 'channel_author' ) . '</itunes:author>' : '' );
 if ( ( $util->get_option( 'channel_owner_email' ) ) && ( $util->get_option( 'channel_owner_name' ) ) ) {
 	echo '<itunes:owner><itunes:name>' . $util->get_option( 'channel_owner_name' ) . '</itunes:name><itunes:email>' . $util->get_option( 'channel_owner_email' ) . '</itunes:email></itunes:owner>';
 }
 echo ( $util->get_option( 'channel_copyright' ) ? '<copyright>' . $util->get_option( 'channel_copyright' ) . '</copyright>' : '' );
 echo ( $util->get_option( 'channel_link' ) ? '<link>' . $util->get_option( 'channel_link' ) . '</link>' : '' );
+echo '<atom:link href="' . get_bloginfo('url') . '/podcast-feed" rel="self" type="application/rss+xml"/>';
 $args = array(
 	'post_type' => 'method_podcast',
 	'posts_per_page' => -1,
