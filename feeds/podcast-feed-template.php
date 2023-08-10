@@ -55,6 +55,7 @@ if ( $items ) {
 				echo '<item>';
 				echo '<title>' . get_the_title( $item ) . '</title>';
 				echo '<guid>' . $item . '</guid>';
+				echo '<pubDate>' . get_the_time( 'r', $item ) . '</pubDate>';
 				echo ( $util->get_loaded_meta( '_method_podcast_artwork' ) ? '<itunes:image href="' . $util->get_loaded_meta( '_method_podcast_artwork' ) . '"/>' : '' );
 				echo '<itunes:explicit>' . ( 'on' == $util->get_loaded_meta( '_method_podcast_explicit' ) ? 'true' : 'false' ) . '</itunes:explicit>';
 				echo '<description><![CDATA[' . apply_filters( 'the_content', ( ! empty( $desc ) ? $desc : get_the_content( null, false, $item ) ) ) . ']]></description>';

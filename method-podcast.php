@@ -373,15 +373,6 @@ function method_podcast_register_podcast_metabox() {
 
 	$cmb_options->add_field(
 		array(
-			'name'     => __( 'Audio File', 'method-podcast' ),
-			'desc'     => __( 'Provide the audio file for this episode.', 'hfh' ),
-			'id'       => '_method_podcast_file',
-			'type'     => 'file',
-		)
-	);
-
-	$cmb_options->add_field(
-		array(
 			'name'     => __( 'Audio File Length', 'method-podcast' ),
 			'desc'     => __( 'This value will automatically be calculated and most likely will never need to be manually entered.', 'hfh' ),
 			'id'       => '_method_podcast_length',
