@@ -3,7 +3,7 @@
  * Plugin Name: Method Podcast
  * Plugin URI:
  * Description: This is a podcast integration that sets up a post type and custom feed for podcasts.
- * Version: 0.9.2
+ * Version: 0.9.3
  * Author: Rob Clark
  * Author URI: https://robclark.io
  * License: GPLv2 or later
@@ -320,6 +320,14 @@ function method_podcast_options_metabox() {
 		)
 	);
 
+	$cmb_options->add_field(
+		array(
+			'name'     => __( 'YouTube URL', 'method-podcast' ),
+			'id'       => 'syndication_youtube',
+			'type'     => 'text_url',
+		)
+	);
+
 }
 
 add_action( 'init', 'method_podcast_init' );
@@ -328,7 +336,7 @@ function method_podcast_get_syndication_links() {
 	$output = '';
 	$links = array();
 	$util = new Method_Podcast_Utilities();
-	$opts = array( 'syndication_spotify', 'syndication_apple', 'syndication_google', 'syndication_pocketcasts' );
+	$opts = array( 'syndication_spotify', 'syndication_apple', 'syndication_google', 'syndication_pocketcasts', 'syndication_youtube' );
 	foreach ( $opts as $opt ) {
 		if ( $util->get_option( $opt ) ) {
 			$link_url = $util->get_option( $opt );
@@ -361,6 +369,13 @@ function method_podcast_get_syndication_links() {
 						'url' => $link_url,
 					);
 					break;
+				case 'syndication_youtube':
+					$links[] = array(
+						'icon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>YouTube</title><path fill="currentColor" d="M0 12.48v-.95c0-.05.02-.09.02-.14.05-.98.08-1.97.16-2.94.06-.68.15-1.37.29-2.04.23-1.09.89-1.84 1.94-2.23.52-.19 1.07-.24 1.62-.29 1.09-.08 2.19-.16 3.29-.2 1.12-.04 2.24-.05 3.37-.07.15 0 .3-.02.45-.02h1.74c.04 0 .08.02.12.02 2.06.02 4.12.05 6.17.22.66.05 1.33.11 1.98.24 1.21.24 2.01.98 2.34 2.17.29 1.05.35 2.13.42 3.21.05.74.09 1.49.08 2.24-.02 1.16-.05 2.32-.13 3.48-.05.76-.16 1.53-.29 2.29-.24 1.45-1.33 2.35-2.6 2.54-.99.15-1.98.22-2.98.27-1.12.05-2.23.09-3.35.12-2.26.05-4.52.03-6.78-.04-1.44-.05-2.87-.1-4.3-.27-.45-.05-.91-.11-1.33-.3-1.01-.45-1.59-1.24-1.81-2.31-.27-1.35-.33-2.72-.4-4.09 0-.33-.01-.62-.02-.91Zm9.6 3.13c2.09-1.2 4.15-2.4 6.23-3.6-2.09-1.2-4.15-2.4-6.23-3.6v7.19Z"/></svg>',
+						'label' => 'YouTube',
+						'url' => $link_url,
+					);
+					break;
 				default:
 					break;
 			}
@@ -377,6 +392,8 @@ function method_podcast_get_syndication_links() {
 }
 
 function method_podcast_init() {
+	$make_archive = ( apply_filters( 'method_podcast_has_archive', true ) );
+
 	$labels = array(
 		'name'               => _x( 'Podcasts', 'post type general name', 'hfh' ),
 		'singular_name'      => _x( 'Podcast', 'post type singular name', 'hfh' ),
@@ -403,11 +420,12 @@ function method_podcast_init() {
 		'query_var'          => true,
 		'capability_type'    => 'post',
 		'rewrite'            => array( 'slug' => 'podcast' ),
-		'has_archive'        => true,
+		'has_archive'        => $make_archive,
 		'hierarchical'       => false,
 		'menu_position' 	 => 5,
 		'menu_icon'			 => 'dashicons-megaphone',
-		'supports'           => array( 'title' , 'editor', 'thumbnail' )
+		'supports'           => array( 'title' , 'editor', 'thumbnail' ),
+		'show_in_rest'       => true,
 	);
 
 	register_post_type( 'method_podcast', $args );
@@ -650,4 +668,13 @@ class Method_Podcast_Utilities {
 		}
 		return $content;
 	}
+}
+
+add_filter('use_block_editor_for_post', 'method_podcast_enable_gutenberg', 10, 2);
+function method_podcast_enable_gutenberg( $use_block_editor, $post ) {
+	$temp = get_post_type( $post->ID );
+    if ( 'method_podcast' == $temp ) {
+    	return false;
+    }
+    return $use_block_editor;
 }
